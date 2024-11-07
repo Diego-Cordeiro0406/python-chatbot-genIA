@@ -1,0 +1,2 @@
+gradio==4.44.1
+google-ai-generativelanguage==0.1.0
