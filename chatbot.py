@@ -2,21 +2,42 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 import gradio as gr
+from home_assistant import (
+    set_light_values, intruder_alert, start_music, good_morning)
 
 load_dotenv()
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+# initial_prompt = (
+#     "Você é uma ia generativa capaz de analisar textos e identificar"
+#     " o sentimento expressado no texto "
+#     "(positivo, negativo, neutro) e fornecer feedback ao usuário."
+# )
+
 initial_prompt = (
-    "Você é uma ia generativa capaz de analisar textos e identificar"
-    " o sentimento expressado no texto "
-    "(positivo, negativo, neutro) e fornecer feedback ao usuário."
+    "Você é um assistente virtual que pode controlar dispositivos domésticos. "
+    "Você tem acesso a funções que "
+    "controlam a casa da pessoa que está usando."
+    " Chame as funções quando achar que deve, "
+    " mas nunca exponha o código delas. "
+    "Assuma que a pessoa é amigável e ajude-a a "
+    "entender o que aconteceu se algo der errado "
+    "ou se você precisar de mais informações."
+    " Não esqueça de, de fato, chamar as funções."
 )
 
 model = genai.GenerativeModel(
-    "gemini-1.5-flash",
-    system_instruction=initial_prompt)
-chat = model.start_chat()
+            model_name="gemini-1.5-flash",
+            tools=[
+                set_light_values,
+                intruder_alert,
+                start_music,
+                good_morning
+            ],
+            system_instruction=initial_prompt
+        )
+chat = model.start_chat(enable_automatic_function_calling=True)
 
 # bot com suporte a varios tipo de aquivos
 # def gradio_wrapper(message, _history):
